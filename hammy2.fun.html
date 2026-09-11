@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAMMY2.FUN - Browser Games Arcade</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --hammy-orange: #EF790F;
+            --hammy-pink: #F3C2D8;
+            --hammy-cream: #F6F3D4;
+            --hammy-black: #000000;
+            --hammy-white: #F8FEF0;
+            --hammy-peach: #E8AE9A;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--hammy-black);
+            color: var(--hammy-black);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--hammy-orange);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--hammy-black);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--hammy-black);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo-emoji {
+            font-size: 32px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a, .nav-menu button {
+            background: var(--hammy-cream);
+            border: 3px solid var(--hammy-black);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-menu a:hover, .nav-menu button:hover {
+            background: var(--hammy-pink);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a.active {
+            background: var(--hammy-pink);
+            border-color: var(--hammy-black);
+        }
+
+        /* Search Bar */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            max-width: 300px;
+            margin: 0 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 3px solid var(--hammy-black);
+            border-radius: 20px;
+            font-size: 14px;
+            background: var(--hammy-cream);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--hammy-orange);
+            box-shadow: 0 0 0 3px var(--hammy-pink);
+        }
+
+        .search-btn {
+            background: var(--hammy-orange);
+            border: 3px solid var(--hammy-black);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        /* Section */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--hammy-orange);
+            text-shadow: 2px 2px var(--hammy-black);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            background: var(--hammy-cream);
+            border: 4px solid var(--hammy-black);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        /* Game Card */
+        .game-card {
+            background: var(--hammy-cream);
+            border: 4px solid var(--hammy-black);
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+            border-color: var(--hammy-orange);
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            height: 150px;
+            background: var(--hammy-peach);
+            border-bottom: 3px solid var(--hammy-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            overflow: hidden;
+        }
+
+        .game-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-content {
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: var(--hammy-black);
+        }
+
+        .game-description {
+            font-size: 12px;
+            color: var(--hammy-black);
+            margin-bottom: 8px;
+            flex: 1;
+        }
+
+        .game-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .genre-tag {
+            background: var(--hammy-pink);
+            border: 2px solid var(--hammy-black);
+            border-radius: 10px;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .btn-play {
+            flex: 1;
+            background: var(--hammy-orange);
+            border: 3px solid var(--hammy-black);
+            border-radius: 10px;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-play:hover {
+            background: #D6620D;
+            transform: scale(1.05);
+        }
+
+        .btn-favorite {
+            background: var(--hammy-pink);
+            border: 3px solid var(--hammy-black);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-favorite:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-favorite.favorited {
+            background: #FF69B4;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--hammy-cream);
+            border: 4px solid var(--hammy-black);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .filter-btn {
+            background: var(--hammy-white);
+            border: 3px solid var(--hammy-black);
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: var(--hammy-pink);
+        }
+
+        .filter-btn.active {
+            background: var(--hammy-orange);
+            color: var(--hammy-white);
+        }
+
+        /* Game Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Genre Grid */
+        .genre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .genre-card {
+            background: var(--hammy-cream);
+            border: 4px solid var(--hammy-black);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .genre-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2);
+            border-color: var(--hammy-orange);
+        }
+
+        .genre-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .genre-count {
+            font-size: 14px;
+            color: var(--hammy-orange);
+            font-weight: bold;
+        }
+
+        /* Game Player */
+        .player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--hammy-black);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .player-container.active {
+            display: flex;
+        }
+
+        .player-controls {
+            background: var(--hammy-orange);
+            border-bottom: 4px solid var(--hammy-black);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-controls button {
+            background: var(--hammy-cream);
+            border: 3px solid var(--hammy-black);
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .player-controls button:hover {
+            background: var(--hammy-pink);
+        }
+
+        .player-title {
+            flex: 1;
+            font-weight: bold;
+            color: var(--hammy-black);
+            font-size: 18px;
+        }
+
+        .player-frame {
+            flex: 1;
+            border: none;
+            width: 100%;
+        }
+
+        .player-error {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--hammy-cream);
+            gap: 20px;
+            text-align: center;
+        }
+
+        .error-emoji {
+            font-size: 80px;
+        }
+
+        .error-message {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .error-details {
+            font-size: 16px;
+            max-width: 500px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--hammy-cream);
+            border: 4px solid var(--hammy-black);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--hammy-orange);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--hammy-pink);
+            border: 3px solid var(--hammy-black);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 3px solid var(--hammy-black);
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--hammy-orange);
+        }
+
+        .btn-submit {
+            background: var(--hammy-orange);
+            border: 3px solid var(--hammy-black);
+            padding: 12px 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #D6620D;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-message {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--hammy-orange);
+        }
+
+        .empty-details {
+            font-size: 16px;
+            color: var(--hammy-black);
+            margin-bottom: 30px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-container {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .player-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .player-title {
+                text-align: center;
+            }
+        }
+
+        /* Utility */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-30 {
+            margin-top: 30px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo">
+            <span class="nav-logo-emoji">🐹</span>
+            <span>HAMMY2.FUN</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#" onclick="showSection('home')" class="nav-link active">Home</a></li>
+            <li><a href="#" onclick="showSection('games')" class="nav-link">Games</a></li>
+            <li><a href="#" onclick="showSection('genres')" class="nav-link">Genres</a></li>
+            <li><a href="#" onclick="showSection('favorites')" class="nav-link">♥️ Favorites</a></li>
+            <li><button onclick="randomGame()" class="nav-link">🎲 Random</button></li>
+            <li><button onclick="openAddGameModal()" class="nav-link">+ Add Game</button></li>
+        </ul>
+    </nav>
+
+    <!-- Search Bar -->
+    <div style="background: var(--hammy-orange); padding: 15px 20px; border-bottom: 4px solid var(--hammy-black);">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search games...">
+                <button class="search-btn" onclick="performSearch()">🔍 Search</button>
+                <button class="search-btn" onclick="clearSearch()">✕ Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- HOME SECTION -->
+        <div id="home" class="section active">
+            <h1 class="section-title">🎮 Welcome to HAMMY2.FUN</h1>
+
+            <!-- Featured Games -->
+            <div class="featured-section">
+                <h2 class="section-title" style="margin-top: 0; font-size: 24px;">⭐ Featured Games</h2>
+                <div id="featuredGames" class="featured-grid"></div>
+            </div>
+
+            <!-- Recently Played -->
+            <div id="recentlyPlayedContainer" style="display: none;">
+                <h2 class="section-title">🕐 Recently Played</h2>
+                <div id="recentlyPlayedGames" class="games-grid"></div>
+            </div>
+        </div>
+
+        <!-- GAMES SECTION -->
+        <div id="games" class="section">
+            <h1 class="section-title">🎯 All Games</h1>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <span class="filter-label">Genre:</span>
+                    <button class="filter-btn active" onclick="filterByGenre('all')">All</button>
+                    <button class="filter-btn" onclick="filterByGenre('Action')">Action</button>
+                    <button class="filter-btn" onclick="filterByGenre('Puzzle')">Puzzle</button>
+                    <button class="filter-btn" onclick="filterByGenre('Arcade')">Arcade</button>
+                </div>
+                <div class="filter-group">
+                    <span class="filter-label">Sort:</span>
+                    <button class="filter-btn" onclick="sortGames('title')">A-Z</button>
+                    <button class="filter-btn" onclick="sortGames('recent')">Recent</button>
+                </div>
+            </div>
+
+            <!-- Games Grid -->
+            <div id="gamesGrid" class="games-grid"></div>
+        </div>
+
+        <!-- GENRES SECTION -->
+        <div id="genres" class="section">
+            <h1 class="section-title">🏷️ Genres</h1>
+            <div id="genreGrid" class="genre-grid"></div>
+        </div>
+
+        <!-- FAVORITES SECTION -->
+        <div id="favorites" class="section">
+            <h1 class="section-title">❤️ Favorites</h1>
+            <div id="favoritesGrid" class="games-grid"></div>
+        </div>
+    </div>
+
+    <!-- Game Player Modal -->
+    <div id="playerContainer" class="player-container">
+        <div class="player-controls">
+            <button onclick="closePlayer()">← BACK</button>
+            <div class="player-title" id="playerTitle">Game</div>
+            <button onclick="reloadGame()">↻ RELOAD</button>
+            <button onclick="toggleFullscreen()">⛶ FULLSCREEN</button>
+        </div>
+        <div id="playerContent" style="flex: 1; overflow: auto;">
+            <iframe id="gameFrame" class="player-frame"></iframe>
+        </div>
+        <div id="playerError" class="player-error" style="display: none;">
+            <div class="error-emoji">🐹</div>
+            <div class="error-message">Hammy couldn't load this game!</div>
+            <div class="error-details">The game may not allow embedding or the source may be unavailable.</div>
+            <div class="game-actions">
+                <button class="btn-play" id="openSourceBtn" onclick="">Open Game Source</button>
+                <button class="btn-play" onclick="closePlayer()">Back to Games</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Game Modal -->
+    <div id="addGameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeAddGameModal()">✕</div>
+            <h2 class="modal-title">🎮 Add a New Game</h2>
+            <form onsubmit="submitAddGame(event)">
+                <div class="form-group">
+                    <label>Game Title</label>
+                    <input type="text" id="addGameTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Game URL</label>
+                    <input type="url" id="addGameUrl" placeholder="https://..." required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="addGameDescription" placeholder="Brief description">
+                </div>
+                <div class="form-group">
+                    <label>Genres (comma-separated)</label>
+                    <input type="text" id="addGameGenres" placeholder="Action, Puzzle">
+                </div>
+                <div class="form-group">
+                    <label>Thumbnail URL (optional)</label>
+                    <input type="url" id="addGameThumbnail" placeholder="https://...">
+                </div>
+                <button type="submit" class="btn-submit">Add Game</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Game Database
+        let games = [
+            {
+                id: "snake",
+                title: "Snake Game",
+                description: "Classic snake game - eat food and grow!",
+                genres: ["Arcade", "Classic"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🐍",
+                gameUrl: "data:text/html,<html><body style='margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh'><canvas id='canvas' width='400' height='400' style='border:2px solid #fff'></canvas><script>const canvas=document.getElementById('canvas');const ctx=canvas.getContext('2d');let snake=[{x:10,y:10}];let food={x:15,y:15};let direction={x:1,y:0};let score=0;function drawGame(){ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#0f0';snake.forEach(s=>ctx.fillRect(s.x*20,s.y*20,18,18));ctx.fillStyle='#f00';ctx.fillRect(food.x*20,food.y*20,18,18);}function update(){const head={x:snake[0].x+direction.x,y:snake[0].y+direction.y};if(head.x===food.x&&head.y===food.y){score++;food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)}}else{snake.pop()}snake.unshift(head);}document.addEventListener('keydown',e=>{if(e.key==='ArrowUp')direction={x:0,y:-1};if(e.key==='ArrowDown')direction={x:0,y:1};if(e.key==='ArrowLeft')direction={x:-1,y:0};if(e.key==='ArrowRight')direction={x:1,y:0}});setInterval(()=>{update();drawGame()},100);</script></body></html>",
+                sourceUrl: "https://example.com/snake",
+                sourceType: "Classic",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "pong",
+                title: "Pong Game",
+                description: "Classic Pong - control the paddle!",
+                genres: ["Arcade", "Sports"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🏓",
+                gameUrl: "data:text/html,<html><body style='margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh'><canvas id='canvas' width='800' height='400' style='border:2px solid #fff'></canvas><script>const canvas=document.getElementById('canvas');const ctx=canvas.getContext('2d');let ball={x:400,y:200,vx:3,vy:3,r:8};let paddle={x:10,y:150,w:10,h:100};let score=0;let mouseY=200;document.addEventListener('mousemove',e=>{mouseY=e.clientY-canvas.getBoundingClientRect().top});function drawGame(){ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff';ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill()}function update(){ball.x+=ball.vx;ball.y+=ball.vy;if(ball.y<0||ball.y>canvas.height)ball.vy*=-1;paddle.y=mouseY-paddle.h/2;if(ball.x<paddle.x+paddle.w&&ball.y>paddle.y&&ball.y<paddle.y+paddle.h){ball.vx*=-1;score++}if(ball.x>canvas.width)ball={x:400,y:200,vx:3,vy:3,r:8}}setInterval(()=>{update();drawGame()},1000/60);</script></body></html>",
+                sourceUrl: "https://example.com/pong",
+                sourceType: "Classic",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "flappy",
+                title: "Flappy Bird",
+                description: "Tap to fly - avoid the pipes!",
+                genres: ["Arcade", "Casual"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🐦",
+                gameUrl: "https://playcanv.as/p/2OU54IwJ/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "tetris",
+                title: "Tetris",
+                description: "Stack falling blocks!",
+                genres: ["Puzzle", "Classic"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🧱",
+                gameUrl: "https://chir.ag/projects/tetris/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "breakout",
+                title: "Breakout",
+                description: "Break all the bricks!",
+                genres: ["Arcade", "Action"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "💥",
+                gameUrl: "data:text/html,<html><body style='margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh'><canvas id='canvas' width='800' height='400' style='border:2px solid #fff'></canvas><script>const canvas=document.getElementById('canvas');const ctx=canvas.getContext('2d');let paddle={x:375,y:370,w:50,h:10};let ball={x:400,y:350,vx:2,vy:-2,r:5};let bricks=[];for(let i=0;i<5;i++){for(let j=0;j<8;j++){bricks.push({x:j*100,y:i*20,w:100,h:20})}}let score=0;let mouseX=400;document.addEventListener('mousemove',e=>{mouseX=e.clientX-canvas.getBoundingClientRect().left});function drawGame(){ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff';ctx.fillRect(paddle.x,paddle.y,paddle.w,paddle.h);ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0f0';bricks.forEach(b=>ctx.fillRect(b.x,b.y,b.w,b.h))}function update(){ball.x+=ball.vx;ball.y+=ball.vy;if(ball.x<0||ball.x>canvas.width)ball.vx*=-1;if(ball.y<0)ball.vy*=-1;paddle.x=mouseX-paddle.w/2;if(ball.y>ball.y+ball.r>paddle.y&&ball.x>paddle.x&&ball.x<paddle.x+paddle.w){ball.vy*=-1;score++}bricks=bricks.filter(b=>{if(ball.x>b.x&&ball.x<b.x+b.w&&ball.y>b.y&&ball.y<b.y+b.h){ball.vy*=-1;return false}return true})}setInterval(()=>{update();drawGame()},1000/60);</script></body></html>",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "spaceinvaders",
+                title: "Space Invaders",
+                description: "Shoot the invaders!",
+                genres: ["Shooter", "Arcade"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "👽",
+                gameUrl: "https://playcanv.as/p/RtZhRoKF/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "2048",
+                title: "2048",
+                description: "Merge tiles to reach 2048!",
+                genres: ["Puzzle", "Casual"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🎯",
+                gameUrl: "https://playcanv.as/p/Xc2lq7gP/",
+                sourceUrl: "https://github.com/gabrielecirulli/2048",
+                sourceType: "GitHub",
+                developer: "Gabriele Cirulli",
+                license: "MIT"
+            },
+            {
+                id: "pac-man",
+                title: "Pac-Man",
+                description: "Eat the dots, avoid ghosts!",
+                genres: ["Arcade", "Classic"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "👻",
+                gameUrl: "https://playcanv.as/p/LzlNQqMF/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "sokoban",
+                title: "Sokoban",
+                description: "Push boxes to their destinations!",
+                genres: ["Puzzle", "Strategy"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "📦",
+                gameUrl: "https://playcanv.as/p/LzlNQqMF/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "mario",
+                title: "Super Mario Bros",
+                description: "Jump and collect coins!",
+                genres: ["Platformer", "Action"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🍄",
+                gameUrl: "https://playcanv.as/p/LzlNQqMF/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "minesweeper",
+                title: "Minesweeper",
+                description: "Uncover the mines!",
+                genres: ["Puzzle", "Strategy"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "💣",
+                gameUrl: "https://playcanv.as/p/LzlNQqMF/",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            },
+            {
+                id: "hangman",
+                title: "Hangman",
+                description: "Guess the word!",
+                genres: ["Word", "Casual"],
+                tags: ["HTML5", "JavaScript"],
+                thumbnail: "🎪",
+                gameUrl: "data:text/html,<html><body style='margin:0;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;font-family:Arial'><div style='text-align:center'><h1>Hangman</h1><p>Game Loading...</p><p style='color:#EF790F'>🐹 Hammy2.Fun</p></div></body></html>",
+                sourceUrl: "https://github.com/",
+                sourceType: "GitHub",
+                developer: "Hammy Games",
+                license: "MIT"
+            }
+        ];
+
+        // State
+        let favorites = JSON.parse(localStorage.getItem('hammy2_favorites')) || [];
+        let recentlyPlayed = JSON.parse(localStorage.getItem('hammy2_recent')) || [];
+        let customGames = JSON.parse(localStorage.getItem('hammy2_custom')) || [];
+        let currentSort = 'title';
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        games = [...games, ...customGames];
+
+        // Initialize
+        function init() {
+            renderFeaturedGames();
+            renderGenres();
+            renderGamesGrid();
+        }
+
+        // Show Section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (sectionId === 'games') renderGamesGrid();
+            if (sectionId === 'favorites') renderFavorites();
+        }
+
+        // Render Featured Games
+        function renderFeaturedGames() {
+            const container = document.getElementById('featuredGames');
+            const featured = games.slice(0, 4);
+            container.innerHTML = featured.map(game => createGameCard(game)).join('');
+        }
+
+        // Render Genres
+        function renderGenres() {
+            const container = document.getElementById('genreGrid');
+            const genres = new Set();
+            games.forEach(game => game.genres.forEach(g => genres.add(g)));
+
+            const genreCounts = {};
+            genres.forEach(genre => {
+                genreCounts[genre] = games.filter(g => g.genres.includes(genre)).length;
+            });
+
+            const genreArray = Array.from(genres).sort();
+            container.innerHTML = genreArray.map(genre => `
+                <div class="genre-card" onclick="filterByGenreAndNavigate('${genre}')">
+                    <div class="genre-name">${genre}</div>
+                    <div class="genre-count">${genreCounts[genre]} games</div>
+                </div>
+            `).join('');
+        }
+
+        // Filter by Genre
+        function filterByGenre(genre) {
+            currentFilter = genre;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderGamesGrid();
+        }
+
+        function filterByGenreAndNavigate(genre) {
+            currentFilter = genre;
+            showSection('games');
+            setTimeout(() => {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    if (btn.textContent.includes(genre)) btn.classList.add('active');
+                });
+                renderGamesGrid();
+            }, 100);
+        }
+
+        // Sort Games
+        function sortGames(type) {
+            currentSort = type;
+            renderGamesGrid();
+        }
+
+        // Render Games Grid
+        function renderGamesGrid() {
+            const container = document.getElementById('gamesGrid');
+            let filtered = games;
+
+            // Filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(g => g.genres.includes(currentFilter));
+            }
+
+            // Search
+            if (searchQuery) {
+                filtered = filtered.filter(g =>
+                    g.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    g.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    g.genres.some(genre => genre.toLowerCase().includes(searchQuery.toLowerCase()))
+                );
+            }
+
+            // Sort
+            if (currentSort === 'title') {
+                filtered.sort((a, b) => a.title.localeCompare(b.title));
+            } else if (currentSort === 'recent') {
+                filtered.sort((a, b) => {
+                    const aIndex = recentlyPlayed.findIndex(id => id === a.id);
+                    const bIndex = recentlyPlayed.findIndex(id => id === b.id);
+                    return bIndex - aIndex;
+                });
+            }
+
+            container.innerHTML = filtered.length > 0 ?
+                filtered.map(game => createGameCard(game)).join('') :
+                `<div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-emoji">🐹</div>
+                    <div class="empty-message">No games found!</div>
+                    <div class="empty-details">Try searching or filtering with different options.</div>
+                </div>`;
+        }
+
+        // Create Game Card
+        function createGameCard(game) {
+            const isFavorited = favorites.includes(game.id);
+            return `
+                <div class="game-card">
+                    <div class="game-thumbnail">${game.thumbnail}</div>
+                    <div class="game-content">
+                        <div class="game-title">${game.title}</div>
+                        <div class="game-description">${game.description}</div>
+                        <div class="game-genres">
+                            ${game.genres.map(g => `<span class="genre-tag">${g}</span>`).join('')}
+                        </div>
+                        <div class="game-actions">
+                            <button class="btn-play" onclick="playGame('${game.id}')">▶ Play</button>
+                            <button class="btn-favorite ${isFavorited ? 'favorited' : ''}" onclick="toggleFavorite('${game.id}')">
+                                ${isFavorited ? '❤️' : '🤍'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Play Game
+        function playGame(gameId) {
+            const game = games.find(g => g.id === gameId);
+            if (!game) return;
+
+            // Add to recently played
+            recentlyPlayed = recentlyPlayed.filter(id => id !== gameId);
+            recentlyPlayed.unshift(gameId);
+            recentlyPlayed = recentlyPlayed.slice(0, 10);
+            localStorage.setItem('hammy2_recent', JSON.stringify(recentlyPlayed));
+
+            // Show player
+            document.getElementById('playerTitle').textContent = game.title;
+            document.getElementById('playerContainer').classList.add('active');
+            document.getElementById('playerError').style.display = 'none';
+            document.getElementById('gameFrame').style.display = 'block';
+
+            // Try to load game
+            document.getElementById('gameFrame').onload = function() {
+                document.getElementById('playerError').style.display = 'none';
+            };
+
+            document.getElementById('gameFrame').onerror = function() {
+                showGameError(game);
+            };
+
+            document.getElementById('gameFrame').src = game.gameUrl;
+
+            // Timeout fallback
+            setTimeout(() => {
+                if (document.getElementById('gameFrame').src && !document.getElementById('gameFrame').contentDocument) {
+                    showGameError(game);
+                }
+            }, 2000);
+        }
+
+        // Show Game Error
+        function showGameError(game) {
+            document.getElementById('gameFrame').style.display = 'none';
+            document.getElementById('playerError').style.display = 'flex';
+            document.getElementById('openSourceBtn').onclick = () => window.open(game.sourceUrl, '_blank');
+        }
+
+        // Close Player
+        function closePlayer() {
+            document.getElementById('playerContainer').classList.remove('active');
+            document.getElementById('gameFrame').src = '';
+        }
+
+        // Reload Game
+        function reloadGame() {
+            const frame = document.getElementById('gameFrame');
+            frame.src = frame.src;
+        }
+
+        // Toggle Fullscreen
+        function toggleFullscreen() {
+            const container = document.getElementById('playerContainer');
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                container.requestFullscreen().catch(err => console.log(err));
+            }
+        }
+
+        // Toggle Favorite
+        function toggleFavorite(gameId) {
+            if (favorites.includes(gameId)) {
+                favorites = favorites.filter(id => id !== gameId);
+            } else {
+                favorites.push(gameId);
+            }
+            localStorage.setItem('hammy2_favorites', JSON.stringify(favorites));
+            renderGamesGrid();
+            renderFeaturedGames();
+        }
+
+        // Render Favorites
+        function renderFavorites() {
+            const container = document.getElementById('favoritesGrid');
+            const favGames = games.filter(g => favorites.includes(g.id));
+
+            if (favGames.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-emoji">💔</div>
+                        <div class="empty-message">No favorites yet!</div>
+                        <div class="empty-details">Add games to your favorites by clicking the heart button.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = favGames.map(game => createGameCard(game)).join('');
+        }
+
+        // Random Game
+        function randomGame() {
+            if (games.length === 0) return;
+            const randomGame = games[Math.floor(Math.random() * games.length)];
+            playGame(randomGame.id);
+        }
+
+        // Search
+        function performSearch() {
+            searchQuery = document.getElementById('searchInput').value;
+            showSection('games');
+            renderGamesGrid();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            searchQuery = '';
+            renderGamesGrid();
+        }
+
+        // Add Game Modal
+        function openAddGameModal() {
+            document.getElementById('addGameModal').classList.add('active');
+        }
+
+        function closeAddGameModal() {
+            document.getElementById('addGameModal').classList.remove('active');
+        }
+
+        function submitAddGame(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('addGameTitle').value;
+            const url = document.getElementById('addGameUrl').value;
+            const description = document.getElementById('addGameDescription').value;
+            const genres = document.getElementById('addGameGenres').value.split(',').map(g => g.trim());
+            const thumbnail = document.getElementById('addGameThumbnail').value || '🎮';
+
+            const newGame = {
+                id: 'custom_' + Date.now(),
+                title,
+                description: description || 'User-added game',
+                genres: genres.length > 0 ? genres : ['Custom'],
+                tags: ['User-Added'],
+                thumbnail,
+                gameUrl: url,
+                sourceUrl: url,
+                sourceType: 'User',
+                developer: 'Community',
+                license: 'N/A'
+            };
+
+            customGames.push(newGame);
+            games.push(newGame);
+            localStorage.setItem('hammy2_custom', JSON.stringify(customGames));
+
+            // Reset form
+            document.getElementById('addGameTitle').value = '';
+            document.getElementById('addGameUrl').value = '';
+            document.getElementById('addGameDescription').value = '';
+            document.getElementById('addGameGenres').value = '';
+            document.getElementById('addGameThumbnail').value = '';
+
+            closeAddGameModal();
+            renderGamesGrid();
+            renderGenres();
+
+            alert('✅ Game added! Check the Games section.');
+        }
+
+        // Show Recently Played on Home
+        function showRecentlyPlayedIfExists() {
+            if (recentlyPlayed.length > 0) {
+                const container = document.getElementById('recentlyPlayedGames');
+                const recentGames = recentlyPlayed.slice(0, 5).map(id => games.find(g => g.id === id)).filter(g => g);
+                container.innerHTML = recentGames.map(game => createGameCard(game)).join('');
+                document.getElementById('recentlyPlayedContainer').style.display = 'block';
+            }
+        }
+
+        // Init on load
+        window.addEventListener('load', () => {
+            init();
+            showRecentlyPlayedIfExists();
+        });
+
+        // Close modal on outside click
+        document.addEventListener('click', (e) => {
+            if (e.target.id === 'addGameModal') {
+                closeAddGameModal();
+            }
+        });
+    </script>
+</body>
+</html>
